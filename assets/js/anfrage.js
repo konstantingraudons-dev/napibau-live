@@ -184,8 +184,7 @@
       ];
       window.location.href = 'mailto:hallo@napibau.de'
         + '?subject=' + encodeURIComponent('Anfrage über napibau.de')
-        + '&body=' + encodeURIComponent(zeilen.join('
-'));
+        + '&body=' + encodeURIComponent(zeilen.join('\n'));
     })();
   });
 
