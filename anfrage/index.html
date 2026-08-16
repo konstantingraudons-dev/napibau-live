@@ -243,37 +243,5 @@
   </div>
 </footer>
 <script src="/assets/js/seite.js" defer></script>
-<script>
-// Uebergangsbetrieb ohne PHP-Server (siehe livegang_github_pages.py):
-// das Absenden oeffnet das Mailprogramm mit der fertig ausgefuellten
-// Anfrage, statt an /anfrage.php zu schicken.
-(function () {
-  'use strict';
-  var form = document.querySelector('form[data-schritt="3"]');
-  if (!form) { return; }
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    var d = new FormData(form);
-    var feld = function (name) { return (d.get(name) || '').toString().trim(); };
-    var zeilen = [
-      'Neue Anfrage ueber napibau.de',
-      '',
-      'Um was geht es: ' + (feld('art') || 'keine Angabe'),
-      'Stadt: ' + (feld('stadt') || 'keine Angabe'),
-      'Flaeche: ' + (feld('flaeche') || 'keine Angabe'),
-      'Wunschzeitraum: ' + (feld('zeitraum') || 'keine Angabe'),
-      '',
-      'Name: ' + feld('name'),
-      'Telefon: ' + feld('telefon'),
-      'E-Mail: ' + feld('email'),
-      '',
-      feld('text'),
-    ];
-    window.location.href = 'mailto:hallo@napibau.de'
-      + '?subject=' + encodeURIComponent('Anfrage über napibau.de')
-      + '&body=' + encodeURIComponent(zeilen.join('\n'));
-  }, true);
-})();
-</script>
 </body>
 </html>

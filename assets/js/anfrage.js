@@ -141,7 +141,7 @@
     var zurueck = ereignis.submitter && ereignis.submitter.value === '1';
     if (zurueck) { zeige(schritt1, schritt2); return; }
     if (!schritt2.reportValidity()) { return; }
-    uebernehmen(schritt2, schritt3, ['art', 'stadtteil', 'flaeche', 'zeitraum', 'quelle', 'honigtopf', 'zeitstempel', 'csrf']);
+    uebernehmen(schritt2, schritt3, ['art', 'stadt', 'flaeche', 'zeitraum', 'quelle', 'honigtopf', 'zeitstempel', 'csrf']);
     dateienUebernehmen(schritt2, schritt3);
     zeige(schritt3, schritt2);
   });
@@ -150,7 +150,7 @@
     var zurueck = ereignis.submitter && ereignis.submitter.value === '2';
     if (zurueck) {
       ereignis.preventDefault();
-      uebernehmen(schritt3, schritt2, ['stadtteil', 'flaeche', 'zeitraum']);
+      uebernehmen(schritt3, schritt2, ['stadt', 'flaeche', 'zeitraum']);
       dateienUebernehmen(schritt3, schritt2);
       zeige(schritt2, schritt3);
       return;
@@ -166,14 +166,27 @@
     // erneutes 'submit'-Ereignis aus (Browser-Spezifikation), dieser Handler
     // laeuft also kein zweites Mal, keine Rekursionsgefahr.
     ereignis.preventDefault();
-    tokenHolen(schritt3).then(function (frischerToken) {
-      if (frischerToken) { setzeWert(schritt3, 'csrf', frischerToken); }
-      // form.submit() sendet keinen Absende-Knopf mit, das schritt=senden
-      // aus dem geklickten Knopf ginge also sonst verloren; deshalb hier
-      // explizit als eigenes verstecktes Feld gesetzt.
-      schrittFeldSetzen(schritt3, 'senden');
-      schritt3.submit();
-    });
+    // Uebergang GitHub Pages (livegang_github_pages.py): kein Server,
+    // das Absenden oeffnet das Mailprogramm mit der fertigen Anfrage.
+    (function () {
+      var d = new FormData(schritt3);
+      var feld = function (name) { return (d.get(name) || '').toString().trim(); };
+      var zeilen = [
+        'Neue Anfrage ueber napibau.de', '',
+        'Um was geht es: ' + (feld('art') || 'keine Angabe'),
+        'Stadt: ' + (feld('stadt') || 'keine Angabe'),
+        'Flaeche: ' + (feld('flaeche') || 'keine Angabe'),
+        'Wunschzeitraum: ' + (feld('zeitraum') || 'keine Angabe'), '',
+        'Name: ' + feld('name'),
+        'Telefon: ' + feld('telefon'),
+        'E-Mail: ' + feld('email'), '',
+        feld('text'),
+      ];
+      window.location.href = 'mailto:hallo@napibau.de'
+        + '?subject=' + encodeURIComponent('Anfrage über napibau.de')
+        + '&body=' + encodeURIComponent(zeilen.join('
+'));
+    })();
   });
 
   // Fordert vor dem echten Absenden einen frischen, serverseitig signierten
