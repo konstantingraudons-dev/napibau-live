@@ -747,6 +747,13 @@ main li a { text-decoration-color: var(--linie-stark); }
 .bild--kachel img { aspect-ratio: 4 / 3; object-fit: cover; }
 .bild--hoch { max-width: 26rem; }
 .bild--hoch img { aspect-ratio: 3 / 4; object-fit: cover; }
+/* Dritter Zuschnitt, seit dem 19.08.2026: die Aufnahmen aus der Lieferung von
+   Kamill sind gemischt hoch und quer. Nebeneinander gestellt vergleicht man
+   sie nur, wenn beide gleich gross sind, also bekommen sie einen gemeinsamen
+   Rahmen. 4 zu 5 ist der Kompromiss: ein Hochformat verliert oben und unten
+   wenig, ein Querformat links und rechts, und keines steht verzerrt da. */
+.bild--zuschnitt img { aspect-ratio: 4 / 5; object-fit: cover; }
+
 
 /* Das Bildband hinter dem Einstieg einer Unterseite. Es laeuft auf dem
    Telefon randlos ueber die Fensterbreite und steht ab Tabletbreite in der
@@ -832,6 +839,51 @@ main li a { text-decoration-color: var(--linie-stark); }
      Unterseiten, wo unter dem Bild nichts als Rand liegt. */
 }
 /* @kritisch-ende */
+
+/* ------------------------------------------------ Vorher und nachher */
+/* Zwei Aufnahmen desselben Raums nebeneinander. Auf dem Telefon stehen sie
+   untereinander, sonst waeren beide zu klein, um etwas zu erkennen.
+   Die Beschriftung liegt IM Bild und nicht darunter: Wer scrollt, muss ohne
+   Zuordnungsarbeit sehen, welche Seite der alte Zustand ist. */
+.gegenueber { display: grid; gap: var(--raum-4); }
+.gegenueber__paar { margin: 0; }
+.gegenueber__bilder { display: grid; gap: var(--raum-2);
+                      grid-template-columns: minmax(0, 1fr); }
+.gegenueber__seite { position: relative; }
+.gegenueber__marke {
+  position: absolute; top: 0; left: 0; z-index: 1;
+  padding: .4rem .75rem;
+  font-family: "Archivo", "Archivo Ersatz", Helvetica, Arial, sans-serif;
+  font-weight: 700; font-size: .6875rem; letter-spacing: .14em;
+  text-transform: uppercase;
+  background: var(--nacht); color: var(--nacht-papier);
+}
+/* Der fertige Zustand traegt die Signalfarbe. Sie kommt auf einer Seite
+   selten vor, und hier zeigt sie genau das, worum es geht. */
+.gegenueber__marke--fertig { background: var(--signal); color: #fff; }
+.gegenueber figcaption { margin-top: .85rem; padding-top: .5rem;
+                         border-top: 1px solid var(--linie);
+                         font-family: "Archivo", "Archivo Ersatz", Helvetica, Arial, sans-serif;
+                         font-size: .8125rem; color: var(--beton); }
+@media (min-width: 56rem) {
+  .gegenueber__bilder { grid-template-columns: repeat(2, minmax(0, 1fr));
+                        gap: var(--raum-2); }
+}
+
+/* Die uebrigen Aufnahmen eines Projekts: gleich grosse Kacheln in einer
+   Reihe. Gleich gross ist hier Bedingung und nicht Geschmack, der Kunde hat
+   unterschiedlich grosse Bilder nebeneinander abgelehnt (12.08.2026). */
+.bildreihe { display: grid; gap: var(--raum-3);
+             grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); }
+.bildreihe__kachel { margin: 0; }
+.bildreihe figcaption { margin-top: .6rem; padding-top: .45rem;
+                        border-top: 1px solid var(--linie);
+                        font-family: "Archivo", "Archivo Ersatz", Helvetica, Arial, sans-serif;
+                        font-size: .75rem; color: var(--beton); }
+.bildreihe figcaption span { display: block; font-family: "Quelle", "Quelle Ersatz", Georgia, serif;
+                             font-style: italic; text-transform: none;
+                             letter-spacing: 0; }
+
 
 /* --------------------------------------------------- Startseite, Gewichtung */
 /* Die acht Leistungen sind nicht gleich viel wert. Der Schwerpunkt bekommt
@@ -1331,6 +1383,20 @@ main address { font-style: normal; }
 .js .einblenden.sichtbar .aufzaehlung > li,
 .js .einblenden.sichtbar .leistungskacheln > li,
 .js .einblenden.sichtbar .schrittfolge > li { opacity: 1; transform: none; }
+/* Dieselbe Staffelung fuer die Bildreihe und die Vorher-nachher-Paare. Sie
+   bestehen aus figure statt li, greifen also nicht in die Regeln darueber. */
+.js .einblenden .bildreihe > figure,
+.js .einblenden .gegenueber > figure {
+  opacity: 0; transform: translateY(8px);
+  transition: opacity 380ms var(--kurve-aus), transform 380ms var(--kurve-aus);
+}
+.js .einblenden.sichtbar .bildreihe > figure,
+.js .einblenden.sichtbar .gegenueber > figure { opacity: 1; transform: none; }
+.js .einblenden.sichtbar :is(.bildreihe, .gegenueber) > :nth-child(2) { transition-delay: 45ms; }
+.js .einblenden.sichtbar :is(.bildreihe, .gegenueber) > :nth-child(3) { transition-delay: 90ms; }
+.js .einblenden.sichtbar :is(.bildreihe, .gegenueber) > :nth-child(4) { transition-delay: 135ms; }
+.js .einblenden.sichtbar :is(.bildreihe, .gegenueber) > :nth-child(5) { transition-delay: 180ms; }
+.js .einblenden.sichtbar :is(.bildreihe, .gegenueber) > :nth-child(6) { transition-delay: 225ms; }
 .js .einblenden.sichtbar :is(.raster--bilder, .projektraster, .aufzaehlung, .leistungskacheln, .schrittfolge) > :nth-child(2) { transition-delay: 45ms; }
 .js .einblenden.sichtbar :is(.raster--bilder, .projektraster, .aufzaehlung, .leistungskacheln, .schrittfolge) > :nth-child(3) { transition-delay: 90ms; }
 .js .einblenden.sichtbar :is(.raster--bilder, .projektraster, .aufzaehlung, .leistungskacheln, .schrittfolge) > :nth-child(4) { transition-delay: 135ms; }
@@ -1409,6 +1475,8 @@ main address { font-style: normal; }
   .js .einblenden .leistungskacheln > li,
   .js .einblenden .schrittfolge > li,
   .js .einblenden .projektblatt__bild img,
+  .js .einblenden .bildreihe > figure,
+  .js .einblenden .gegenueber > figure,
   .js .einblenden .bildband img { opacity: 1; transform: none; transition: none; }
   ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
   * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
@@ -1421,6 +1489,7 @@ main address { font-style: normal; }
   /* Auf Papier gibt es kein Scrollen, also darf nichts eingeblendet warten. */
   .js .einblenden, .js .einblenden .raster--bilder > li,
   .js .einblenden .projektraster > li,
+  .js .einblenden .bildreihe > figure, .js .einblenden .gegenueber > figure,
   .js .einblenden .aufzaehlung > li, .js .einblenden .schrittfolge > li { opacity: 1; transform: none; }
   .abschnitt--nacht, .anfrage-block { background: none; color: #000; }
   .abschnitt--nacht::before, .anfrage-block::before { display: none; }
